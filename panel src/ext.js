@@ -26,8 +26,26 @@ function onLoaded() {
     // Update the color of the panel when the theme color of the product changed.
     csInterface.addEventListener(CSInterface.THEME_COLOR_CHANGED_EVENT, onAppThemeColorChanged);
 	
-    //init Ink Panel Preferences .jsx
+    //get or init Ink panel settings / prefs
     evalScript("$._ext_inkUISettings.getSettings()", onInkUiSettings );
+
+    //get installed fonts
+    evalScript("$._ext_inkUISettings.getFonts()", onFonts );
+}
+
+function onFonts( res )
+{
+    try 
+    {
+        var flist         = JSON.parse( res );
+        var event         = document.createEvent('Event');
+        event.flist       = flist;
+        event.initEvent('onFonts', true, true);
+        document.dispatchEvent(event);
+    }
+    catch (e) {
+        alert( "Ooops. Something went wrong. Please try again.");
+    }
 }
 
 /**
@@ -35,13 +53,9 @@ function onLoaded() {
  */
 function onInkUiSettings( res ) {
     try {
-        var responseStr       = res.toString(); 
-        var splitUserSettings = responseStr.split(","); 
-
+        var settings      = JSON.parse( res );
         var event         = document.createEvent('Event');
-        event.settingsStr = responseStr;
-
-        // Define that the event name is 'build'.
+        event.settings    = settings;
         event.initEvent('onInkUISettings', true, true);
         document.dispatchEvent(event);
     }

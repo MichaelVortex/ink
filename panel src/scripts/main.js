@@ -7,6 +7,16 @@ myInkSettings.output_text_color = "#ffffff";
 myInkSettings.measures_color    = "#28e4b9";
 myInkSettings.text_bubble_color = "#28e4b9";
 
+//temp data goes here
+var _temp                  = {};
+
+//"onInkUISettings" event gets triggered
+//before "onFonts", which populate the
+//dropdown with installed fonts. I am
+//storing the font setting temporarily here.
+_temp.uisettings           = {};
+_temp.uisettings.text_font = "";
+
 //EVENT LISTENERS
 //-----------------------------------------------------------------------------------
 
@@ -26,23 +36,88 @@ document.getElementById("ink").addEventListener("click", function()
     jsxcall_ink( callArgs );
 });
 
+document.addEventListener('onFonts', function (e) 
+{
+    var dd = document.getElementById("text_font");
+    dd.onchange = function()
+    {
+        //alert( dd.selectedIndex );
+        //alert( dd.text );
+        setDropdown( "text_font", dd.value, "y" );
+    };
+
+
+    var htmlstr = "";
+    for ( var i = 0; i < e.flist.length; i++ )
+    {
+        htmlstr += "<option value=\"" + e.flist[i].postScriptName + "\">" + e.flist[i].name + "</option>";
+    }
+    dd.innerHTML = htmlstr;
+
+    setDropdown( "text_font", _temp.uisettings.text_font, "n" );
+}, false);
+
 //on user UI settings received
 document.addEventListener('onInkUISettings', function (e) 
-{    
-    var splitUserSettings = e.settingsStr.toString().split(","); 
+{
+    //alert("on settings.");
+    for ( var i = 0; i < e.settings.length; i++ )
+    {
+        switch( e.settings[i].key )
+        {
+            case "layerDocumentation_printObj":
+                setSwitchSetting( e.settings[i].key, e.settings[i].val, "n" );
+            break;
 
-    setSwitchSetting( "layerDocumentation_printObj", splitUserSettings[0], "n" );
-    setSwitchSetting( "layerDocumentation_printColor", splitUserSettings[1], "n" );
-    setSwitchSetting( "layerDocumentation_printFx", splitUserSettings[2], "n" );
-    setSwitchSetting( "text_bubble_styling", splitUserSettings[3], "n" );
-    setSwitchSetting( "generate_xml", splitUserSettings[4], "n" );
-    setColorPicker( "output_text_color", splitUserSettings[5], "n" );
-    setColorPicker( "measures_color", splitUserSettings[6], "n" );
-    setColorPicker( "text_bubble_color", splitUserSettings[7], "n" );
-    setCounter("text_size",splitUserSettings[8], "n");
-    setCounter("ruler_stroke",splitUserSettings[9], "n");
-    setCounter("color_format",splitUserSettings[10], "n");
-    setSwitchSetting( "layerDocumentation_printMeasures", splitUserSettings[11], "n" );
+            case "layerDocumentation_printColor":
+                setSwitchSetting( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "layerDocumentation_printFx":
+                setSwitchSetting( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "text_bubble_styling":
+                setSwitchSetting( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "generate_xml":
+                setSwitchSetting( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "output_text_color":
+                setColorPicker( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "measures_color":
+                setColorPicker( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "text_bubble_color":
+                setColorPicker( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "text_size":
+                setCounter( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "ruler_stroke":
+                setCounter( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "color_format":
+                setCounter( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "layerDocumentation_printMeasures":
+                setSwitchSetting( e.settings[i].key, e.settings[i].val, "n" );
+            break;
+
+            case "text_font":
+                _temp.uisettings.text_font = e.settings[i].val;
+            break;
+        }
+    }
 
     //@status "on" (CSS mode) | "off" (PS mode)
     //if (splitUserSettings[8] == "css") {
@@ -50,11 +125,14 @@ document.addEventListener('onInkUISettings', function (e)
     //} else {
     //    setInlineDocType( "off" );   
     //}
-
 }, false);
 
+//FUNCTIONS
+//-----------------------------------------------------------------------------------
+
 //store user UI setting (on UI element change)
-function storeUISettings() {
+function storeUISettings() 
+{
     var settingsArr = getUISettings();
 
     //Plugin for Photoshop CC
@@ -80,7 +158,25 @@ function storeUISettings() {
     }
 }
 
-function switchTab( n ) {
+function getDropdown( target ) 
+{
+    var dd = document.getElementById( target );
+    return dd.value;
+}
+
+function setDropdown( target, val, store )
+{
+    var dd = document.getElementById( target );
+    dd.value = val;  
+
+    if ( store == "y" ) 
+    {
+        storeUISettings();   
+    }   
+}
+
+function switchTab( n ) 
+{
     document.getElementsByClassName("tab")[0].setAttribute( 'class', "tab off" );
     document.getElementsByClassName("tab")[1].setAttribute( 'class', "tab off" );
     document.getElementsByClassName("tab")[2].setAttribute( 'class', "tab off" );
@@ -93,10 +189,13 @@ function switchTab( n ) {
 }
 
 
-function getCounter(target) {
+function getCounter(target) 
+{
     return document.getElementById(target).innerHTML.toString();   
 }
-function setCounter(target, val, store) {
+
+function setCounter(target, val, store) 
+{
     document.getElementById(target).innerHTML = val.toString();
 
     if ( store == "y" ) {
@@ -105,12 +204,13 @@ function setCounter(target, val, store) {
 }
 
 //number step function called via UI
-function stepTextSize(target, store) {
-    var min = 10;
+function stepTextSize(target, store) 
+{
+    var min = 9;
     var max = 32;
     var val = parseInt( getCounter("text_size") );
     var newVal;
-    console.log(val);
+    
     var direction = target.getAttribute('class').toString();
     if ( direction == "next" ) {
         newVal = val + 1; 
@@ -147,7 +247,8 @@ function stepColorFormat( target, store )
 }
 
 //number step function called via UI
-function stepRulerStroke(target, store) {
+function stepRulerStroke(target, store) 
+{
     var min = 1;
     var max = 4;
     var val = parseInt( getCounter("ruler_stroke") );
@@ -170,7 +271,8 @@ function stepRulerStroke(target, store) {
 
 //set target color picker color and update settings
 //argID is the attribute id and the div id as well.
-function setColorPicker( argID, hex, store ) {
+function setColorPicker( argID, hex, store ) 
+{
 	var isValidHex  = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(hex);
 	if ( ! isValidHex ) {
 		hex = myInkSettings[argID];
@@ -185,12 +287,15 @@ function setColorPicker( argID, hex, store ) {
     }
 
 }
-function getColorPicker( argID ) {
+
+function getColorPicker( argID ) 
+{
     return ( document.getElementsByName(argID)[0].value );
 }
 
 //triggered on color pick manual change.
-function checkColorValue(e,store) {
+function checkColorValue(e,store) 
+{
 	var validEvent = false;
 	switch ( e.type.toString() ) {
 		case 'blur':
@@ -217,7 +322,8 @@ function checkColorValue(e,store) {
 }
 
 //get switch value
-function getSwitchSetting( argId ) {
+function getSwitchSetting( argId ) 
+{
     var switchVal = "";
     var targetSwitch = document.getElementById(argId);
     if ( targetSwitch.getAttribute('class').toString() == "switch on" ) {
@@ -232,7 +338,8 @@ function getSwitchSetting( argId ) {
 //argID is the attribute id and the div id as well.
 //val is the switch value. 'on' or 'off'
 //store: 'y' or 'n'. Store into user preferences or not.
-function setSwitchSetting( argId, val, store ) {
+function setSwitchSetting( argId, val, store ) 
+{
     try {
         var targetSwitch     = document.getElementById(argId);
         myInkSettings[argId] = val;
@@ -247,7 +354,8 @@ function setSwitchSetting( argId, val, store ) {
         alert( "Ooops. Something went wrong. Please try again.");
     }
 }
-function editSwitchSettings( argId, store ) {
+function editSwitchSettings( argId, store ) 
+{
 	try 
     {
         var targetSwitch = document.getElementById(argId);
@@ -275,9 +383,10 @@ function editSwitchSettings( argId, store ) {
 //this is used to set the initial status at startup,
 //following user preferences. It just set the appearence.
 //@status "on" (CSS mode) | "off" (PS mode)
-function setInlineDocType( status ) {
-	var target        = document.getElementById( "inline_doc_type" );
-	var targetPsLabel = document.getElementById( "inline_doc_type_ps_lbl" );
+function setInlineDocType( status ) 
+{
+	var target         = document.getElementById( "inline_doc_type" );
+	var targetPsLabel  = document.getElementById( "inline_doc_type_ps_lbl" );
 	var targetCssLabel = document.getElementById( "inline_doc_type_css_lbl" );
 
 	var targetClassStatus = "hswitch " + status.toString();
@@ -295,7 +404,8 @@ function setInlineDocType( status ) {
 		targetCssLabel.setAttribute( 'class', 'r on' ); 
 	}
 }
-function getInlineDocType() {
+function getInlineDocType() 
+{
     var myDocType = "";
     if ( document.getElementById( "inline_doc_type" ).getAttribute('class').toString() == "hswitch on" ) {
         myDocType = "css";
@@ -322,7 +432,8 @@ function switchInlineDocType()
 }
 
 /* get all UI settings and return a string */
-function getUISettings() {
+function getUISettings() 
+{
     var uiSettings = [];
 
     //0: "layerDocumentation_printObj"
@@ -361,8 +472,8 @@ function getUISettings() {
     //11: "layerDocumentation_printMeasures"
     uiSettings.push( getSwitchSetting( "layerDocumentation_printMeasures" ) );
 
-    //"inline_output_type"
-    //uiSettings.push( getInlineDocType() );
+    //12: "text_font"
+    uiSettings.push( getDropdown( "text_font" ) );
 
     return uiSettings;  
 }
@@ -376,7 +487,8 @@ function jsxcall_ink( args )
     var toInk = getUISettings();
 
     //push ink arguments at the end of the array..
-    for ( var i = 0; i < args.length; i ++ ) {
+    for ( var i = 0; i < args.length; i ++ ) 
+    {
         toInk.push( args[i] );
     }
 
@@ -394,7 +506,7 @@ function jsxcall_ink( args )
                 {
                     inkActionStr += ",";  
                 }
-            } 
+            }
             
             evalScript("$._ext_INK.run('" + inkActionStr + "')");
         }

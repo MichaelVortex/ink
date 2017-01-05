@@ -3,19 +3,8 @@ Ink, Photoshop specs generator
 Website: http://ink.chrometaphore.com
 
 
-PLEASE NOTICE
-
-Photoshop CC 2015 introduced features that INK is not supporting yet:
-
-1 - Ink does not support artboards. If you need to document your mockups with Ink, please use a document that does not contain artboards. To create a document without artboards, you can select File -> New -> Document Type: “Custom” from the Photoshop Menu.
-
-2 - Ink does not support multiple fx of the same type (for example, two drop shadows fx on the same layer).
-
-Since Extension Manager is not supporting CC 2015 products anymore, you will have to manually install Ink for Photoshop CC 2015.
-
-
 INSTALLATION
-
+Since Extension Manager is not supporting CC 2015 products anymore, you will have to manually install Ink for Photoshop CC 2015.
 Follow these steps according to your operating system.
 
 
@@ -49,5 +38,10 @@ Windows 32 Bit: C:\Program Files\Common Files\Adobe\CEP\extensions\
 3 - If Photoshop is open, restart.
 
 4 - you should be able to locale Ink under Window -> Extensions -> Ink
+
+
+Missing Features:
+
+Ink does not support documenting multiple fx of the same type over the same layer (for example, two drop shadows fx on a text field).
 
 
