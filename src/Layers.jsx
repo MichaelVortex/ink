@@ -203,8 +203,9 @@ var Layers = {
 		textColor.rgb.blue   = color.blue;
 
 		var textItemRef      = txtLyr.textItem;
-		textItemRef.font     = font;
+		
 		textItemRef.contents = content;
+		textItemRef.font     = font;
 		textItemRef.color    = textColor;
 		this.changeTextSize(size);
 		//textItemRef.size     = size;
