@@ -93,42 +93,34 @@ p {
 /* standard button */
 .stdBtn {
 	border: solid 1px #343434;
-	background: #343434;
+	background-color: #343434;
+	transition: background-color 0.2s ease;
 }
 .stdBtn:hover {
-	background: #4e4e4e;
+	background-color: #4e4e4e;
 }
 .stdBtn:active {
-	background: #2e2e2e;
+	background-color: #2e2e2e;
 }
 
 /* main ink button */
 #ink {
-	-webkit-border-radius: 6px;
-	border-radius:6px;
+	-webkit-border-radius: 8px;
+	border-radius:8px;
 	background-color:rgba(0,0,0,0.15);
 }
 #ink #btn {
-	-webkit-border-radius:4px;
-	border-radius:4px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
 	background-color: #eeeeee;
 	text-align:center;
+	transition: background-color 0.2s ease;
 }
 #ink #btn:hover {
 	background-color: #ffffff;
 }
 #ink #btn:active {
 	background-color: #dddddd;
-}
-
-/* document btn icon (extends main.css #btn_document #icon_document )*/
-#btn_document .icon {
-	/*
-	background-image: url(../assets/ps.dark/icon_document@2x.png);
-	background-size:10px 11px;
-	background-repeat:no-repeat;
-	background-position: 94px 5px;
-	*/
 }
 
 #settings {
